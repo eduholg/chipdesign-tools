@@ -164,7 +164,11 @@ push:
 
 pull:
 ifeq (,$(NO_PULL))
-	docker image pull $(DOCKER_IMAGE_TAG)
+ifeq (Windows_NT,$(OS))
+	@docker image inspect $(DOCKER_IMAGE_TAG) >NUL 2>&1 || docker image pull $(DOCKER_IMAGE_TAG)
+else
+	@docker image inspect $(DOCKER_IMAGE_TAG) >/dev/null 2>&1 || docker image pull $(DOCKER_IMAGE_TAG)
+endif
 endif
 
 
