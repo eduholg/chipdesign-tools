@@ -71,13 +71,14 @@ DOCKER_RUN=docker run -it $(_DOCKER_ROOT_USER) \
 	--net=host \
 	-e SHELL=/bin/bash \
 	-e PDK=$(PDK) \
-	-e DISPLAY \
+	-e DISPLAY=$(DISPLAY) \
 	$(XAUTHORITY_ENV) \
 	-e LIBGL_ALWAYS_INDIRECT=1 \
-	-e XDG_RUNTIME_DIR \
+	-e XDG_RUNTIME_DIR=/tmp/runtime-default \
 	-e PULSE_SERVER \
 	-e USER_ID=$(USER_ID) \
 	-e USER_GROUP=$(USER_GROUP) \
+	--device=/dev/dri:/dev/dri \
 	--name $(CONTAINER_NAME)
 
 # _XSERVER_EXISTS and START_XSERVER are not required
