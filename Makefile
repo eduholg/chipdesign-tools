@@ -51,16 +51,28 @@ SHARED_DIR_HASH := $(shell echo -n $(SHARED_DIR) | md5sum | awk '{print $$1}')
 CONTAINER_NAME  := unic-cass-tools-$(SHARED_DIR_HASH)
 CONTAINER_ID    := $(shell docker container ls -a -q -f "name=$(CONTAINER_NAME)")
 
+# Detect XAUTHORITY location - use environment variable if set, otherwise try common locations
+# Check multiple possible locations and use the first one that exists
+XAUTHORITY_HOST := $(shell if [ -n "$$XAUTHORITY" ] && [ -f "$$XAUTHORITY" ]; then echo "$$XAUTHORITY"; elif [ -f "$$HOME/.Xauthority" ]; then echo "$$HOME/.Xauthority"; elif [ -f "/home/$(USER)/.Xauthority" ]; then echo "/home/$(USER)/.Xauthority"; fi)
+XAUTHORITY_CONTAINER := /tmp/.Xauthority
+
+# Build XAUTHORITY mount option only if file exists
+XAUTHORITY_MOUNT := $(if $(XAUTHORITY_HOST),-v $(XAUTHORITY_HOST):$(XAUTHORITY_CONTAINER):rw,)
+
+# Build XAUTHORITY environment variable only if mount exists
+XAUTHORITY_ENV := $(if $(XAUTHORITY_HOST),-e XAUTHORITY=$(XAUTHORITY_CONTAINER),)
+
 # Since it uses local xserver, --net=host is required and DISPLAY should be equal to host
 
 DOCKER_RUN=docker run -it $(_DOCKER_ROOT_USER) \
 	--mount type=bind,source=$(SHARED_DIR),target=/home/designer/shared \
 	-v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-	-v /home/$(USER)/.Xauthority:/home/designer/.Xauthority:rw \
+	$(XAUTHORITY_MOUNT) \
 	--net=host \
 	-e SHELL=/bin/bash \
 	-e PDK=$(PDK) \
 	-e DISPLAY \
+	$(XAUTHORITY_ENV) \
 	-e LIBGL_ALWAYS_INDIRECT=1 \
 	-e XDG_RUNTIME_DIR \
 	-e PULSE_SERVER \
