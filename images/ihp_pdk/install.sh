@@ -3,7 +3,8 @@
 set -ex
 cd /tmp
 
-git clone --depth 1 --branch dev "$IHP_PDK_REPO_URL" ihp
+# Clone without depth limit to ensure the specific commit is available
+git clone --branch dev "$IHP_PDK_REPO_URL" ihp
 cd ihp
 git checkout $IHP_PDK_REPO_COMMIT
 git submodule update --init --recursive

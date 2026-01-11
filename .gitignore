@@ -56,3 +56,4 @@ dkms.conf
 *.log
 **/_build_logs
 *.raw
+**/run
