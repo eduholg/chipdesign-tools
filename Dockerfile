@@ -18,9 +18,9 @@ ARG OPEN_PDKS_REPO_URL="https://github.com/RTimothyEdwards/open_pdks"
 ARG OPEN_PDKS_REPO_COMMIT="0fe599b2afb6708d281543108caf8310912f54af"
 ARG OPEN_PDKS_NAME="open_pdks"
 
-# Feb 23, 2025 (8.3.522)
+# Jan 5, 2026 (8.3.589)
 ARG MAGIC_REPO_URL="https://github.com/RTimothyEdwards/magic.git"
-ARG MAGIC_REPO_COMMIT="8.3.522"
+ARG MAGIC_REPO_COMMIT="8.3.589"
 ARG MAGIC_NAME="magic"
 
 # Sept 19, 2025 (dev)
@@ -34,9 +34,9 @@ ARG OPENVAF_REPO_COMMIT="a9697ae7780518f021f9f64e819b3a57033bd39f"
 ARG OPENVAF_DOWNLOAD="https://openva.fra1.cdn.digitaloceanspaces.com/openvaf_23_5_0_linux_amd64.tar.gz"
 ARG OPENVAF_NAME="openvaf"
 
-# Mar 05, 2025 (v0.29.12)
+# Nov 12, 2025 (v0.30.5)
 ARG KLAYOUT_REPO_URL="https://github.com/KLayout/klayout"
-ARG KLAYOUT_REPO_COMMIT="v0.29.12"
+ARG KLAYOUT_REPO_COMMIT="v0.30.5"
 ARG KLAYOUT_DOWNLOAD="https://www.klayout.org/downloads/Ubuntu-22/klayout_0.30.1-1_amd64.deb"
 ARG KLAYOUT_NAME="klayout"
 
