@@ -559,8 +559,8 @@ RUN source ~/.nix-profile/etc/profile.d/nix.sh && \
 # Configure /etc/bash.bashrc for interactive shells and replace .bashrc with Nix-compatible version
 USER root
 RUN --mount=type=bind,source=images/final_structure/configure,target=/images/final_structure/configure \
-    cp /images/final_structure/configure/etc_bash.bashrc_nix /etc/bash.bashrc && \
-    cp /images/final_structure/configure/.bashrc /home/designer/.bashrc && \
+    sed 's/\r$//' /images/final_structure/configure/etc_bash.bashrc_nix > /etc/bash.bashrc && \
+    sed 's/\r$//' /images/final_structure/configure/.bashrc > /home/designer/.bashrc && \
     chown designer:designer /home/designer/.bashrc
 
 USER designer
