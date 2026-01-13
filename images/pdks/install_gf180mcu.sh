@@ -7,7 +7,7 @@ export PATH=`realpath $TOOLS/magic/*/bin`:$PATH
 # Use limited parallelism to reduce RAM usage
 BUILD_JOBS=${MAX_BUILD_JOBS:-2}
 echo "Building gf180mcu PDK with $BUILD_JOBS parallel jobs"
-volare build --pdk=gf180mcu --clear-build-artifacts -j ${BUILD_JOBS} $OPEN_PDKS_REPO_COMMIT
+volare build --pdk=gf180mcu -j ${BUILD_JOBS} $OPEN_PDKS_REPO_COMMIT
 volare enable --pdk=gf180mcu $OPEN_PDKS_REPO_COMMIT
 
 rm -rf $PDK_ROOT/gf180mcuA
