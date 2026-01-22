@@ -4,7 +4,10 @@ set -ex
 
 pip install uv
 
-uv pip install --system --strict --compile-bytecode --no-cache \
+# Increase timeout for large package downloads
+export UV_HTTP_TIMEOUT=300
+
+uv pip install --system --strict --compile-bytecode \
     "numpy<2" \
     gdsfactory \
     glayout \

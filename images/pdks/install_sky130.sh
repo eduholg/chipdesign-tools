@@ -4,10 +4,13 @@ set -ex
 
 export PATH=`realpath $TOOLS/magic/*/bin`:$PATH
 
+# Ensure PDK_ROOT directory exists
+mkdir -p "$PDK_ROOT"
+
 # Use limited parallelism to reduce RAM usage
 BUILD_JOBS=${MAX_BUILD_JOBS:-2}
 echo "Building sky130 PDK with $BUILD_JOBS parallel jobs"
-volare build --pdk=sky130 --clear-build-artifacts -j ${BUILD_JOBS} $OPEN_PDKS_REPO_COMMIT
+volare build --pdk=sky130 -j ${BUILD_JOBS} $OPEN_PDKS_REPO_COMMIT
 volare enable --pdk=sky130 $OPEN_PDKS_REPO_COMMIT
 
 rm -rf $PDK_ROOT/sky130B

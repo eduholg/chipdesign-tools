@@ -27,7 +27,7 @@
 		},
 		{
 			"source": "/home/${localEnv:USER}/.Xauthority",
-			"target": "/home/designer/.Xauthority",
+			"target": "/tmp/.Xauthority",
 			"type": "bind"
 		}
 	],
@@ -35,6 +35,7 @@
 		"SHELL": "/bin/bash",
 		"PDK": "sky130A",
 		"DISPLAY": "${localEnv:DISPLAY}",
+		"XAUTHORITY": "/tmp/.Xauthority",
 		"LIBGL_ALWAYS_INDIRECT": "1"
 	}
 }

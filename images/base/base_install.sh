@@ -2,9 +2,48 @@
 
 set -ex
 
-apt -y update
+# Configure apt retry options for network reliability
+echo 'Acquire::Retries "10";' > /etc/apt/apt.conf.d/80-retries
+echo 'Acquire::http::Timeout "60";' >> /etc/apt/apt.conf.d/80-retries
+echo 'Acquire::ftp::Timeout "60";' >> /etc/apt/apt.conf.d/80-retries
 
-apt install -y  --no-install-recommends locales apt-utils
+# Retry apt update with exponential backoff
+set +e
+for i in {1..5}; do
+    if apt -y update; then
+        set -e
+        break
+    else
+        if [ $i -lt 5 ]; then
+            echo "apt update failed, retrying in $((i*5)) seconds... (attempt $i/5)"
+            sleep $((i*5))
+        else
+            echo "apt update failed after 5 attempts"
+            set -e
+            exit 1
+        fi
+    fi
+done
+set -e
+
+# Retry apt install with exponential backoff
+set +e
+for i in {1..5}; do
+    if apt install -y  --no-install-recommends locales apt-utils; then
+        set -e
+        break
+    else
+        if [ $i -lt 5 ]; then
+            echo "apt install failed, retrying in $((i*5)) seconds... (attempt $i/5)"
+            sleep $((i*5))
+        else
+            echo "apt install failed after 5 attempts"
+            set -e
+            exit 1
+        fi
+    fi
+done
+set -e
 sed -i -e "s/# $LC_ALL UTF-8/$LC_ALL UTF-8/" /etc/locale.gen
 dpkg-reconfigure --frontend=noninteractive locales
 update-locale LANG=$LANG
@@ -120,7 +159,26 @@ DEPS=(
 	"${ORFS_DEPS[@]}"
 )
 
-apt install -y --no-install-recommends "${DEPS[@]}"
+# Retry apt install for dependencies with exponential backoff
+set +e
+for i in {1..5}; do
+    if apt install -y --no-install-recommends "${DEPS[@]}"; then
+        set -e
+        break
+    else
+        if [ $i -lt 5 ]; then
+            echo "apt install dependencies failed, retrying in $((i*5)) seconds... (attempt $i/5)"
+            sleep $((i*5))
+            # Try to fix broken packages
+            apt -y --fix-broken install || true
+        else
+            echo "apt install dependencies failed after 5 attempts"
+            set -e
+            exit 1
+        fi
+    fi
+done
+set -e
 
 rm -rf /var/lib/apt/lists/*
 rm -rf /tmp/*
