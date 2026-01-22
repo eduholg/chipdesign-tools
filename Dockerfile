@@ -23,9 +23,9 @@ ARG MAGIC_REPO_URL="https://github.com/RTimothyEdwards/magic.git"
 ARG MAGIC_REPO_COMMIT="8.3.589"
 ARG MAGIC_NAME="magic"
 
-# Sept 19, 2025 (dev)
+# Jan 20, 2026 (dev)
 ARG IHP_PDK_REPO_URL="https://github.com/IHP-GmbH/IHP-Open-PDK.git"
-ARG IHP_PDK_REPO_COMMIT="bf18b2dd478f214a5c872ad125a4e0db4a90886f"
+ARG IHP_PDK_REPO_COMMIT="08855ec49a5937c1c1050807e8329ad6d6b1f901"
 ARG IHP_PDK_NAME="ihp-sg13g2"
 
 # Oct 30, 2023 (master)
@@ -486,6 +486,11 @@ RUN chown -R designer:designer /opt/pdks/ihp-sg13g2/
 RUN --mount=type=bind,source=images/final_structure/configure,target=/images/final_structure/configure \
     bash -c 'cat images/final_structure/configure/.bashrc' >> /home/designer/.bashrc && \
     bash -c 'cat images/final_structure/configure/.bashrc' >> /root/.bashrc
+
+# Patch IHP PDK for KLayout DRC compatibility
+RUN --mount=type=bind,source=images/final_structure/configure,target=/images/final_structure/configure \
+    cd /images/final_structure/configure/ \
+    && bash patch_pdk_ihp.sh
 
 # Run xschem install.py script as designer user
 USER designer
