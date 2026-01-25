@@ -37,7 +37,7 @@ ARG OPENVAF_NAME="openvaf"
 # Nov 12, 2025 (v0.30.5)
 ARG KLAYOUT_REPO_URL="https://github.com/KLayout/klayout"
 ARG KLAYOUT_REPO_COMMIT="v0.30.5"
-ARG KLAYOUT_DOWNLOAD="https://www.klayout.org/downloads/Ubuntu-22/klayout_0.30.1-1_amd64.deb"
+ARG KLAYOUT_DOWNLOAD="https://www.klayout.org/downloads/Ubuntu-22/klayout_0.30.5-1_amd64.deb"
 ARG KLAYOUT_NAME="klayout"
 
 # Mar 14, 2025 (master)
