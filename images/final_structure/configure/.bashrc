@@ -91,17 +91,15 @@ fi
 # SET PDK PARAMETERS
 # ------------------
 
-# Compile OSDI file if it doesn't exists
-IHP_OPENVAF_DIR=$PDK_ROOT/ihp-sg13g2/libs.tech/ngspice/openvaf
-if [ ! -f "$IHP_OPENVAF_DIR/psp103_nqs.osdi" ]; then
+# Compile OSDI files if they don't exist (v0.3.0+ structure)
+IHP_OSDI_DIR=$PDK_ROOT/ihp-sg13g2/libs.tech/ngspice/osdi
+IHP_VA_DIR=$PDK_ROOT/ihp-sg13g2/libs.tech/verilog-a
+if [ ! -f "$IHP_OSDI_DIR/psp103_nqs.osdi" ]; then
     echo "Compiling ihp-sg13g2 osdi files"
-    openvaf $IHP_OPENVAF_DIR/psp103_nqs.va --output /tmp/psp103_nqs.osdi
-
-    if [ $? -eq 0 ]; then
-        echo "Compilation succeded"
-        sudo mv /tmp/psp103_nqs.osdi $IHP_OPENVAF_DIR
+    if [ -f "$IHP_VA_DIR/openvaf-compile-va.sh" ]; then
+        cd "$IHP_VA_DIR" && bash openvaf-compile-va.sh && cd - > /dev/null
     else
-        echo "Compilation failed, reopen another terminal"
+        echo "Verilog-A compile script not found at $IHP_VA_DIR/openvaf-compile-va.sh"
     fi
 fi
 
