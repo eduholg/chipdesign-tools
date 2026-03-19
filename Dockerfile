@@ -18,7 +18,10 @@ ARG OPEN_PDKS_REPO_URL="https://github.com/RTimothyEdwards/open_pdks"
 ARG OPEN_PDKS_REPO_COMMIT="0fe599b2afb6708d281543108caf8310912f54af"
 ARG OPEN_PDKS_NAME="open_pdks"
 
-# Mar 2, 2026 (8.3.613)                                                          ARG MAGIC_REPO_URL="https://github.com/RTimothyEdwards/magic.git"                ARG MAGIC_REPO_COMMIT="8.3.613"                                                  ARG MAGIC_NAME="magic"
+# Mar 2, 2026 (8.3.613)
+ARG MAGIC_REPO_URL="https://github.com/RTimothyEdwards/magic.git"
+ARG MAGIC_REPO_COMMIT="8.3.613"
+ARG MAGIC_NAME="magic"
 
 # Mar 11, 2026 (v0.3.0)
 ARG IHP_PDK_REPO_URL="https://github.com/IHP-GmbH/IHP-Open-PDK.git"
