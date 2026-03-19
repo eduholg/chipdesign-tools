@@ -31,9 +31,9 @@ endif
 
 ifeq (,$(DOCKER_TAG))
 ifneq (,$(ENABLE_GUI))
-DOCKER_TAG=1.0.7_vnc
+DOCKER_TAG=1.1.0_vnc
 else
-DOCKER_TAG=1.0.7
+DOCKER_TAG=1.1.0
 endif
 endif
 

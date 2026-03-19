@@ -18,14 +18,15 @@ ARG OPEN_PDKS_REPO_URL="https://github.com/RTimothyEdwards/open_pdks"
 ARG OPEN_PDKS_REPO_COMMIT="0fe599b2afb6708d281543108caf8310912f54af"
 ARG OPEN_PDKS_NAME="open_pdks"
 
-# Jan 5, 2026 (8.3.589)
+# Mar 2, 2026 (8.3.613)
 ARG MAGIC_REPO_URL="https://github.com/RTimothyEdwards/magic.git"
-ARG MAGIC_REPO_COMMIT="8.3.589"
+ARG MAGIC_REPO_COMMIT="8.3.613"
 ARG MAGIC_NAME="magic"
 
-# Jan 20, 2026 (dev)
+# Mar 11, 2026 (v0.3.0)
 ARG IHP_PDK_REPO_URL="https://github.com/IHP-GmbH/IHP-Open-PDK.git"
-ARG IHP_PDK_REPO_COMMIT="08855ec49a5937c1c1050807e8329ad6d6b1f901"
+ARG IHP_PDK_REPO_COMMIT="5cccb161f7492697cfa52eb14dc03beb00bdca9e"
+ARG IHP_PDK_REPO_BRANCH="v0.3.0"
 ARG IHP_PDK_NAME="ihp-sg13g2"
 
 # Oct 30, 2023 (master)
@@ -238,6 +239,7 @@ FROM openvaf AS ihp_pdk
 
 ARG IHP_PDK_REPO_URL \
     IHP_PDK_REPO_COMMIT \
+    IHP_PDK_REPO_BRANCH \
     IHP_PDK_NAME
 
 RUN --mount=type=bind,source=images/ihp_pdk,target=/images/ihp_pdk \
@@ -476,15 +478,6 @@ RUN find /opt -type f -executable -not -path "*/common/*" -exec file {} \; | \
 
 # Ensure OpenROAD and OpenVAF are in PATH for all users
 ENV PATH="$TOOLS/openroad/bin:$TOOLS/openvaf/bin:$PATH"
-
-# Clone openvaf files for IHP PDK
-RUN cd /opt/pdks && \
-    git clone --depth 1 --filter=blob:none --no-checkout https://github.com/IHP-GmbH/IHP-Open-PDK.git tmp && \
-    cd tmp && \
-    git checkout 4d6ba9b695afdf84d57e4b3bdd2234f96e8910bd -- ihp-sg13g2/libs.tech/ngspice/openvaf && \
-    mv ihp-sg13g2/libs.tech/ngspice/openvaf /opt/pdks/ihp-sg13g2/libs.tech/ngspice/ && \
-    cd .. && \
-    rm -rf tmp
 
 RUN --mount=type=bind,source=images/final_structure/configure,target=/images/final_structure/configure \
     cd /images/final_structure/configure/ \
