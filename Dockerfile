@@ -121,6 +121,21 @@ USER root
 #######################################################################
 FROM common AS base
 
+ARG ENABLE_GUI
+ENV ENABLE_GUI=${ENABLE_GUI}
+
+# From build/images/base/Dockerfile IIC_OSIC_TOOLS
+ENV VNC_PORT=5901 \
+    NO_VNC_PORT=80
+EXPOSE $VNC_PORT $NO_VNC_PORT 
+
+# Environment config
+ENV NO_VNC_HOME=/usr/share/novnc \
+    VNC_COL_DEPTH=24 \
+    VNC_RESOLUTION=1680x1050 \
+    VNC_PW=abc123 \
+    VNC_VIEW_ONLY=false
+
 RUN --mount=type=bind,source=images/base,target=/images/base \
     bash /images/base/base_install.sh
 RUN --mount=type=bind,source=images/base,target=/images/base \

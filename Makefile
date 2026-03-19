@@ -2,7 +2,42 @@ all: print
 
 PDK=ihp-sg13g2
 SHARED_DIR=$(abspath ./shared_xserver)
-DOCKER_IMAGE_TAG=isaiassh/unic-cass-tools:1.1.0
+
+#Based on https://stackoverflow.com/a/70663753
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
+ifeq (,$(WEBSERVER_PORT))
+WEBSERVER_PORT=80
+endif
+
+ifeq (,$(VNC_PORT))
+VNC_PORT=5901
+endif
+
+ifeq (,$(JUPYTER_PORT))
+JUPYTER_PORT=8888
+endif
+
+ifeq (,$(DOCKER_USER))
+DOCKER_USER=isaiassh
+endif
+
+ifeq (,$(DOCKER_IMAGE))
+DOCKER_IMAGE=unic-cass-tools
+endif
+
+ifeq (,$(DOCKER_TAG))
+ifneq (,$(ENABLE_GUI))
+DOCKER_TAG=1.1.0_vnc
+else
+DOCKER_TAG=1.1.0
+endif
+endif
+
+DOCKER_IMAGE_TAG=$(DOCKER_USER)/$(DOCKER_IMAGE):$(DOCKER_TAG)
 
 ifneq (,$(ROOT))
 _DOCKER_ROOT_USER=--user root
@@ -31,7 +66,7 @@ DOCKER_RUN=docker run -it $(_DOCKER_ROOT_USER) \
 	-e LIBGL_ALWAYS_INDIRECT=1 \
 	-e XDG_RUNTIME_DIR \
 	-e PULSE_SERVER \
-	-p 8888:8888 \
+	-p $(JUPYTER_PORT):8888 \
 	--name $(CONTAINER_NAME)
 
 _XSERVER_EXISTS := $(shell powershell -noprofile Get-Process vcxsrv -ErrorAction SilentlyContinue)
@@ -71,16 +106,31 @@ DOCKER_RUN=docker run -it $(_DOCKER_ROOT_USER) \
 	--net=host \
 	-e SHELL=/bin/bash \
 	-e PDK=$(PDK) \
-	-e DISPLAY \
+	-e DISPLAY=$(DISPLAY) \
 	$(XAUTHORITY_ENV) \
 	-e LIBGL_ALWAYS_INDIRECT=1 \
-	-e XDG_RUNTIME_DIR \
+	-e XDG_RUNTIME_DIR=/tmp/runtime-default \
 	-e PULSE_SERVER \
 	-e USER_ID=$(USER_ID) \
 	-e USER_GROUP=$(USER_GROUP) \
-	--name $(CONTAINER_NAME)
+	--device=/dev/dri:/dev/dri \
+	-p $(VNC_PORT):5901 \
+	-p $(WEBSERVER_PORT):80 \
+	--name $(CONTAINER_NAME) 
 
 # _XSERVER_EXISTS and START_XSERVER are not required
+
+DOCKER_RUN_VNC=docker run -d $(_DOCKER_ROOT_USER) \
+	--mount type=bind,source=$(SHARED_DIR),target=/home/designer/shared \
+	-e SHELL=/bin/bash \
+	-e PDK=$(PDK) \
+	-e DISPLAY=:1 \
+	-e USER_ID=$(USER_ID) \
+	-e USER_GROUP=$(USER_GROUP) \
+	-p $(JUPYTER_PORT):8888 \
+	-p $(VNC_PORT):5901 \
+	-p $(WEBSERVER_PORT):80 \
+	--name $(CONTAINER_NAME)
 
 endif
 
@@ -128,7 +178,7 @@ print:
 
 
 build:
-	BUILDKIT_PROGRESS=plain docker build $(_DOCKER_NO_CACHE) -t $(DOCKER_IMAGE_TAG) --target unic-cass-tools-nix .
+	BUILDKIT_PROGRESS=plain docker build $(_DOCKER_NO_CACHE) -t $(DOCKER_IMAGE_TAG) --build-arg ENABLE_GUI=$(ENABLE_GUI) --target unic-cass-tools-nix .
 	docker image ls $(DOCKER_IMAGE_TAG)
 
 
@@ -144,6 +194,10 @@ endif
 
 start: xserver pull
 	$(DOCKER_RUN) --rm $(DOCKER_IMAGE_TAG)
+
+start-vnc:
+	$(DOCKER_RUN_VNC) $(DOCKER_IMAGE_TAG) --vnc --wait
+
 
 attach: xserver pull
 ifeq (,$(CONTAINER_ID))
