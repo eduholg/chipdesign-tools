@@ -180,13 +180,29 @@ for i in {1..5}; do
 done
 set -e
 
+GUI_DEPS=(
+	novnc
+  tigervnc-standalone-server
+  xfce4
+  xfce4-terminal
+)
+
+if [[ ! -z ${ENABLE_GUI} ]]; then
+	apt install -y "${GUI_DEPS[@]}"
+
+	# remove light-locker and other power management stuff, otherwise VNC session locks up
+	apt purge -y light-locker pm-utils *screensaver*
+	apt autoremove -y
+
+	/bin/dbus-uuidgen > /etc/machine-id
+
+	# create index.html to forward automatically to `vnc_lite.html`
+	ln -s "$NO_VNC_HOME"/vnc_lite.html "$NO_VNC_HOME"/index.html
+fi
+
 rm -rf /var/lib/apt/lists/*
 rm -rf /tmp/*
 apt -y autoremove --purge
 apt -y clean
-
-# tigervnc-standalone-server \
-# xfce4 \
-# xfce4-terminal \
 
 update-alternatives --install /usr/bin/python python /usr/bin/python3 0	
