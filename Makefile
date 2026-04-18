@@ -113,7 +113,7 @@ DOCKER_RUN=docker run -it $(_DOCKER_ROOT_USER) \
 	-e PULSE_SERVER \
 	-e USER_ID=$(USER_ID) \
 	-e USER_GROUP=$(USER_GROUP) \
-	--device=/dev/dri:/dev/dri \
+	#--device=/dev/dri:/dev/dri \
 	-p $(VNC_PORT):5901 \
 	-p $(WEBSERVER_PORT):80 \
 	--name $(CONTAINER_NAME) 
