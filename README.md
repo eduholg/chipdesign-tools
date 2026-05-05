@@ -38,8 +38,8 @@ We welcome contributions from the global IC design community!
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/unic-cass/uniccass-icdesign-tools.git
-   cd uniccass-icdesign-tools
+   https://github.com/EduHolg/chipdesign-tools/
+   cd chipdesign-tools
    ```
 
 2. **Build and run the Docker environment:**
@@ -65,8 +65,8 @@ We welcome contributions from the global IC design community!
 
 3. **Clone the repository inside your WSL environment:**
    ```bash
-   git clone https://github.com/unic-cass/uniccass-icdesign-tools.git
-   cd uniccass-icdesign-tools
+   git clone https://github.com/EduHolg/chipdesign-tools/
+   cd chipdesign-tools
    ```
 
 4. **Build and run:**
